@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Chantiers BTP">
+  <meta name="theme-color" content="#0D2137">
+  <title>Synergie BTP — Recherche Chantier</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy:   #0D2137;
+      --blue:   #1565C0;
+      --accent: #FFC107;
+      --green:  #00C853;
+      --red:    #FF1744;
+      --white:  #F0F4F8;
+      --glass:  rgba(255,255,255,0.06);
+      --glass2: rgba(255,255,255,0.12);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--navy);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+      color: var(--white);
+    }
+
+    /* ── Fond animé ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 10% 10%, rgba(21,101,192,0.35) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 50% at 90% 80%, rgba(0,200,83,0.12) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 40% at 50% 50%, rgba(255,193,7,0.06) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 480px;
+      padding: 0 20px 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* ── Header ── */
+    header {
+      width: 100%;
+      padding: 56px 0 32px;
+      text-align: center;
+    }
+
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--glass2);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 100px;
+      padding: 6px 16px 6px 8px;
+      margin-bottom: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.7);
+      backdrop-filter: blur(10px);
+    }
+
+    .logo-dot {
+      width: 8px; height: 8px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--green);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    h1 {
+      font-size: clamp(28px, 8vw, 38px);
+      font-weight: 800;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    h1 span {
+      color: var(--accent);
+      display: block;
+    }
+
+    .subtitle {
+      margin-top: 10px;
+      font-size: 14px;
+      color: rgba(255,255,255,0.45);
+      font-weight: 400;
+      letter-spacing: 0.01em;
+    }
+
+    /* ── Zone de recherche ── */
+    .search-card {
+      width: 100%;
+      background: var(--glass);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 24px;
+      padding: 20px;
+      backdrop-filter: blur(20px);
+      margin-bottom: 16px;
+    }
+
+    .search-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 10px;
+    }
+
+    .search-input-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 16px;
+      font-size: 18px;
+      pointer-events: none;
+      opacity: 0.5;
+    }
+
+    #searchInput {
+      width: 100%;
+      background: rgba(255,255,255,0.08);
+      border: 2px solid rgba(255,193,7,0.4);
+      border-radius: 14px;
+      padding: 16px 44px 16px 48px;
+      font-family: 'Syne', sans-serif;
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--white);
+      outline: none;
+      transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+      -webkit-appearance: none;
+    }
+
+    #searchInput::placeholder { color: rgba(255,255,255,0.25); font-weight: 400; }
+
+    #searchInput:focus {
+      border-color: var(--accent);
+      background: rgba(255,255,255,0.12);
+      box-shadow: 0 0 0 4px rgba(255,193,7,0.12);
+    }
+
+    .clear-btn {
+      position: absolute;
+      right: 12px;
+      background: rgba(255,255,255,0.1);
+      border: none;
+      border-radius: 50%;
+      width: 28px; height: 28px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: rgba(255,255,255,0.6);
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .clear-btn.visible { display: flex; }
+    .clear-btn:active { background: rgba(255,255,255,0.2); }
+
+    /* ── Résultat principal ── */
+    .result-card {
+      width: 100%;
+      background: var(--glass);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 24px;
+      padding: 20px;
+      backdrop-filter: blur(20px);
+      margin-bottom: 24px;
+      min-height: 90px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .result-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 8px;
+    }
+
+    #resultDisplay {
+      font-family: 'DM Mono', monospace;
+      font-size: 32px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+      color: var(--green);
+      transition: all 0.2s;
+      min-height: 42px;
+    }
+
+    #resultDisplay.empty {
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 400;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 0;
+    }
+
+    #resultDisplay.none {
+      color: var(--red);
+      font-family: 'Syne', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0;
+    }
+
+    #multiResults {
+      margin-top: 8px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+      font-family: 'DM Mono', monospace;
+      line-height: 1.8;
+      display: none;
+    }
+
+    #multiResults span {
+      display: inline-block;
+      background: rgba(255,255,255,0.07);
+      border-radius: 6px;
+      padding: 2px 8px;
+      margin: 2px 3px 2px 0;
+      color: rgba(255,255,255,0.55);
+      font-size: 11px;
+    }
+
+    /* ── Liste des chantiers ── */
+    .list-header {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .list-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+
+    .count-badge {
+      font-size: 11px;
+      font-weight: 600;
+      background: rgba(255,193,7,0.15);
+      color: var(--accent);
+      border-radius: 100px;
+      padding: 3px 10px;
+    }
+
+    .chantier-list {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .chantier-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 14px;
+      background: var(--glass);
+      border: 1px solid rgba(255,255,255,0.06);
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s, border-color 0.15s;
+      animation: slideIn 0.3s ease both;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .chantier-item:active { transform: scale(0.98); background: var(--glass2); }
+
+    .chantier-item.highlighted {
+      background: rgba(0,200,83,0.1);
+      border-color: rgba(0,200,83,0.3);
+    }
+
+    .item-color {
+      width: 4px;
+      min-width: 4px;
+      height: 36px;
+      border-radius: 4px;
+    }
+
+    .item-code {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.5);
+      min-width: 82px;
+    }
+
+    .item-nom {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--white);
+      flex: 1;
+      line-height: 1.3;
+    }
+
+    .item-nom mark {
+      background: rgba(255,193,7,0.3);
+      color: var(--accent);
+      border-radius: 3px;
+      padding: 0 2px;
+    }
+
+    .no-results {
+      text-align: center;
+      padding: 40px 20px;
+      color: rgba(255,255,255,0.3);
+      font-size: 15px;
+    }
+
+    .no-results-icon { font-size: 40px; margin-bottom: 12px; }
+
+    /* ── Footer ── */
+    footer {
+      margin-top: 32px;
+      font-size: 11px;
+      color: rgba(255,255,255,0.2);
+      text-align: center;
+      letter-spacing: 0.05em;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <header>
+    <div class="logo-badge">
+      <span class="logo-dot"></span>
+      Synergie BTP
+    </div>
+    <h1>Recherche<span>Chantier</span></h1>
+    <p class="subtitle">66 chantiers actifs · Guadeloupe</p>
+  </header>
+
+  <!-- Zone de saisie -->
+  <div class="search-card">
+    <div class="search-label">Nom du chantier</div>
+    <div class="search-input-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Ex : GTM, SGTC, SOFI…" autocomplete="off" autocorrect="off" autocapitalize="characters" spellcheck="false">
+      <button class="clear-btn" id="clearBtn" onclick="clearSearch()">✕</button>
+    </div>
+  </div>
+
+  <!-- Résultat principal -->
+  <div class="result-card">
+    <div class="result-label">Numéro de chantier</div>
+    <div id="resultDisplay" class="empty">← Commencez à taper</div>
+    <div id="multiResults"></div>
+  </div>
+
+  <!-- Liste filtrée -->
+  <div class="list-header">
+    <span class="list-title">Liste des chantiers</span>
+    <span class="count-badge" id="countBadge">66</span>
+  </div>
+  <div class="chantier-list" id="chantierList"></div>
+
+  <footer>Synergie BTP · 20/04/2026</footer>
+</div>
+
+<script>
+const CHANTIERS = [
+  ["CH001378","BCA ANTILLES"],["CH001377","ASSELIN FRANCK"],["CH001376","AUTO GUADELOUPE"],
+  ["CH001375","CROUS ANTILLES-GUYANE"],["CH001374","SGTC"],["CH001373","REDNECK"],
+  ["CH001372","BABOU"],["CH001371","CAT TPLEC"],["CH001370","MALAJO GHP"],
+  ["CH001369","ETMF"],["CH001368","COEUR DE JARRY"],["CH001367","LOGISPACES"],
+  ["CH001366","PYTHAGORE"],["CH001365","SGEC"],["CH001364","ICM"],["CH001363","EDT"],
+  ["CH001362","LDTP"],["CH001361","AGORE INVEST"],["CH001360","SOTRADOM"],
+  ["CH001359","SYSTEKO"],["CH001358","GENERATION TRAVAUX"],["CH001357","SIMCAR"],
+  ["CH001356","KARINVEST"],["CH001355","TRAVAUX MODERNE INGENIERIE"],
+  ["CH001354","TERRASSES DE LA DIGUE"],["CH001353","MONTMIR"],["CH001352","DISTRIPARTS"],
+  ["CH001351","LES HAUTS BERGNOLLE"],["CH001350","MELIN ALEXANDRE"],
+  ["CH001349","OMNI SERVICES RENOC"],["CH001348","SIBA"],["CH001346","TAPENADE"],
+  ["CH001345","GALANTINE"],["CH001344","LUIDJI"],["CH001343","SERCO"],
+  ["CH001342","DOMAINE DE MONTERAN"],["CH001341","DOCTEUR CHARNEAU"],["CH001340","SGTC"],
+  ["CH001339","FIDEXCIA"],["CH001337","ETABLISSEMENT FRANCAIS DU SANG"],
+  ["CH001336","LAFARGE"],["CH001335","KARINVEST"],["CH001332","GTP"],
+  ["CH001331","CONSTRUCTION THELEMAQUE"],["CH001329","SOGETRA COL9774"],
+  ["CH001328","WIPACK"],["CH001327","GETELEC TP"],["CH001325","WIPACK"],
+  ["CH001324","PREFECTURE REGION GUADELOUPE"],["CH001323","DCT"],["CH001322","DECO RENOV"],
+  ["CH001321","IMMO DESTRELLAN 2024"],["CH001318","GTM"],["CH001317","HORIZON"],
+  ["CH001316","GTM"],["CH001315","SGTC"],["CH001314","LES VILLAS DE CONVENANCE"],
+  ["CH001311","GETELEC TP"],["CH001309","CONVENANCE MEDICAL"],["CH001308","GTM"],
+  ["CH001307","ADT"],["CH001306","AVENIR DECONSTRUCTION"],["CH001305","SAGIP GUADELOUPE"],
+  ["CH001304","SCI DEPROGE1"],["CH001285","SOFIJAR GROS OEUVRE"],["CH001284","SOFIJAR VRD"]
+];
+
+const COLORS = ["#1565C0","#2E7D32","#C62828","#E65100"];
+
+const input      = document.getElementById('searchInput');
+const result     = document.getElementById('resultDisplay');
+const multiRes   = document.getElementById('multiResults');
+const list       = document.getElementById('chantierList');
+const countBadge = document.getElementById('countBadge');
+const clearBtn   = document.getElementById('clearBtn');
+
+function highlight(text, query) {
+  if (!query) return text;
+  const idx = text.toUpperCase().indexOf(query.toUpperCase());
+  if (idx === -1) return text;
+  return text.slice(0, idx)
+    + '<mark>' + text.slice(idx, idx + query.length) + '</mark>'
+    + text.slice(idx + query.length);
+}
+
+function render(query) {
+  const q = query.trim().toUpperCase();
+  const matched = q ? CHANTIERS.filter(([, nom]) => nom.includes(q)) : CHANTIERS;
+
+  // Résultat principal
+  if (!q) {
+    result.textContent = '← Commencez à taper';
+    result.className = 'empty';
+    multiRes.style.display = 'none';
+  } else if (matched.length === 0) {
+    result.textContent = 'Aucun résultat';
+    result.className = 'none';
+    multiRes.style.display = 'none';
+  } else {
+    result.textContent = matched[0][0];
+    result.className = '';
+    if (matched.length > 1) {
+      multiRes.style.display = 'block';
+      multiRes.innerHTML = matched.map(([code]) => `<span>${code}</span>`).join('');
+    } else {
+      multiRes.style.display = 'none';
+    }
+  }
+
+  // Liste
+  countBadge.textContent = matched.length;
+  list.innerHTML = '';
+  matched.forEach(([code, nom], i) => {
+    const item = document.createElement('div');
+    item.className = 'chantier-item' + (i === 0 && q ? ' highlighted' : '');
+    item.style.animationDelay = Math.min(i * 20, 200) + 'ms';
+    const color = COLORS[CHANTIERS.findIndex(c => c[0] === code) % 4];
+    item.innerHTML = `
+      <div class="item-color" style="background:${color}"></div>
+      <div class="item-code">${code}</div>
+      <div class="item-nom">${highlight(nom, q)}</div>
+    `;
+    item.addEventListener('click', () => {
+      input.value = nom;
+      render(nom);
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    });
+    list.appendChild(item);
+  });
+}
+
+function clearSearch() {
+  input.value = '';
+  clearBtn.classList.remove('visible');
+  render('');
+  input.focus();
+}
+
+input.addEventListener('input', () => {
+  const q = input.value.trim();
+  clearBtn.classList.toggle('visible', q.length > 0);
+  render(q);
+});
+
+// Rendu initial
+render('');
+
+// PWA Service Worker
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(() => {});
+}
+</script>
+</body>
+</html>

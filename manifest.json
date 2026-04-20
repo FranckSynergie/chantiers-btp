@@ -1,0 +1,14 @@
+{
+  "name": "Synergie BTP — Recherche Chantier",
+  "short_name": "Chantiers BTP",
+  "description": "Recherche rapide de numéros de chantiers Synergie BTP",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0D2137",
+  "theme_color": "#0D2137",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icon.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icon.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

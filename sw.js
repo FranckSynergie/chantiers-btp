@@ -1,20 +1,20 @@
 // Service Worker — Synergie BTP Recherche Chantier
-// Version : 2026-06-25 (CH001400 — 780 chantiers)
-
-const CACHE_NAME = 'chantiers-btp-v20260625';
+// Version : 2026-08-06 (CH001407 — 802 chantiers)
+ 
+const CACHE_NAME = 'chantiers-btp-v20260806';
 const URLS = [
   './',
   './index.html',
   './manifest.json'
 ];
-
+ 
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(CACHE_NAME).then(cache => cache.addAll(URLS))
   );
   self.skipWaiting();
 });
-
+ 
 self.addEventListener('activate', e => {
   e.waitUntil(
     caches.keys().then(keys =>
@@ -23,9 +23,10 @@ self.addEventListener('activate', e => {
   );
   self.clients.claim();
 });
-
+ 
 self.addEventListener('fetch', e => {
   e.respondWith(
     caches.match(e.request).then(cached => cached || fetch(e.request))
   );
 });
+ 

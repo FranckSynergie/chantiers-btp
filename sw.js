@@ -1,8 +1,7 @@
 // Service Worker — Synergie BTP Recherche Chantier
-// Version : 2026-08-06 (CH001407 — 802 chantiers)
-// Redeploy trigger: 2026-08-07 (relance suite incident GitHub Actions/Pages)
+// Version : 2026-09-14 (CH001415 — 810 chantiers)
 
-const CACHE_NAME = 'chantiers-btp-v20260806';
+const CACHE_NAME = 'chantiers-btp-v20260914';
 const URLS = [
   './',
   './index.html',

@@ -6,7 +6,8 @@ const CACHE_NAME = 'chantiers-btp-v20260914';
 const URLS = [
   './',
   './index.html',
-  './manifest.json'
+  './manifest.json',
+  './chantiers.json'
 ];
 
 self.addEventListener('install', e => {
